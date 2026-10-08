@@ -12,13 +12,15 @@ npm install
 npm start          # builds Wasm and runs ng serve (http://localhost:4200)
 npm test           # builds Wasm and runs the unit tests (Vitest)
 npm run build      # builds Wasm and the production bundle into dist/
+npx playwright install chromium   # once, downloads the browser for the e2e tests
+npm run e2e        # Playwright end-to-end tests (starts the dev server on :4300 itself)
 ```
 Wasm is built with `npm run build:wasm` (AssemblyScript → `public/market.wasm`);
 it is already part of `start`, `build` and `test`.
 
 ## Deployment
 Every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml): `npm ci`, the unit tests,
-a production build with `--base-href /<repo>/` and a deploy to GitHub Pages. Pull requests run the tests and the
+the Playwright e2e tests, a production build with `--base-href /<repo>/` and a deploy to GitHub Pages. Pull requests run the tests and the
 build without deploying. `index.html` is copied to `404.html`, so deep links and reloads (e.g. `/settings`) are
 handled by the Angular router; the browser console shows a 404 for such a reload, which is how Pages serves the fallback.
 `public/market.wasm` is a build artifact (not committed): CI builds it from `assembly/index.ts`.
@@ -88,3 +90,10 @@ timers, no real waits), the worker command queue and error recovery, navigation 
 producer, the paused state survives), the generator (the real compiled Wasm: batch size, value validity,
 price and book evolution, the trade side following the book, seed determinism).
 Shared test doubles (fake timers, fake worker, Wasm loader) live in `src/testing/`.
+
+## End-to-end tests (`npm run e2e`)
+Playwright (Chromium) drives the real app with the real Wasm in the worker, in [`e2e/`](e2e): the producer starts and
+fills the table, Pause freezes the counters and Resume continues them, Apply restarts the run with the new
+configuration (and lifts a pause), invalid settings block Apply, a reload on `/settings` works.
+Assertions are web-first (auto-retrying) on UI state such as `data-status` and the counters; the only fixed waits are in the Pause test, to prove the counters stay frozen.
+Failed runs keep a trace in `test-results/` (`npx playwright show-trace <trace.zip>`).

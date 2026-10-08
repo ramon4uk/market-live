@@ -27,6 +27,13 @@ jobs:
       - run: npm ci
       # Both scripts build Wasm first (pretest / prebuild).
       - run: npm test -- --no-watch
+      - run: npx playwright install --with-deps chromium
+      - run: npm run e2e
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-traces
+          path: test-results
       # Pages serves the site from /<repo>/, so the base href must match the repository name.
       - run: npm run build -- --base-href "/${{ github.event.repository.name }}/"
       # SPA fallback: Pages returns 404.html for unknown paths (e.g. a reload on /settings),
