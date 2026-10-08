@@ -1,0 +1,48 @@
+<h1>Data producer settings</h1>
+<p class="hint">
+  Changes to the form don't affect the producer until you press <strong>Apply</strong>.
+  Apply starts a new run: values and totals are cleared and any pause is lifted.
+</p>
+
+<app-status-pill class="status" [status]="producer.status()" />
+
+<form [formGroup]="form" (ngSubmit)="apply()" novalidate>
+  <div class="field">
+    <label for="instruments">Number of instruments ({{ limits.instruments.min }}–{{ limits.instruments.max }})</label>
+    <span class="stepper">
+      <button type="button" class="step" (click)="step('instruments', -1)" [disabled]="form.controls.instruments.value <= limits.instruments.min" aria-label="Decrease">−</button>
+      <input id="instruments" type="number" formControlName="instruments" step="1" inputmode="numeric" />
+      <button type="button" class="step" (click)="step('instruments', 1)" [disabled]="form.controls.instruments.value >= limits.instruments.max" aria-label="Increase">+</button>
+    </span>
+    @if (error('instruments'); as e) { <span class="err" data-testid="err-instruments">{{ e }}</span> }
+  </div>
+  <div class="field">
+    <label for="updatesPerBatch">Updates per batch ({{ limits.updatesPerBatch.min }}–{{ limits.updatesPerBatch.max }})</label>
+    <span class="stepper">
+      <button type="button" class="step" (click)="step('updatesPerBatch', -1)" [disabled]="form.controls.updatesPerBatch.value <= limits.updatesPerBatch.min" aria-label="Decrease">−</button>
+      <input id="updatesPerBatch" type="number" formControlName="updatesPerBatch" step="1" inputmode="numeric" />
+      <button type="button" class="step" (click)="step('updatesPerBatch', 1)" [disabled]="form.controls.updatesPerBatch.value >= limits.updatesPerBatch.max" aria-label="Increase">+</button>
+    </span>
+    @if (error('updatesPerBatch'); as e) { <span class="err" data-testid="err-updatesPerBatch">{{ e }}</span> }
+  </div>
+  <div class="field">
+    <label for="batchIntervalMs">Batch interval, ms ({{ limits.batchIntervalMs.min }}–{{ limits.batchIntervalMs.max }})</label>
+    <span class="stepper">
+      <button type="button" class="step" (click)="step('batchIntervalMs', -1)" [disabled]="form.controls.batchIntervalMs.value <= limits.batchIntervalMs.min" aria-label="Decrease">−</button>
+      <input id="batchIntervalMs" type="number" formControlName="batchIntervalMs" step="1" inputmode="numeric" />
+      <button type="button" class="step" (click)="step('batchIntervalMs', 1)" [disabled]="form.controls.batchIntervalMs.value >= limits.batchIntervalMs.max" aria-label="Increase">+</button>
+    </span>
+    @if (error('batchIntervalMs'); as e) { <span class="err" data-testid="err-batchIntervalMs">{{ e }}</span> }
+  </div>
+
+  @if (draftRate(); as rate) {
+    <p class="hint" data-testid="draft-rate">≈ {{ rate }} updates/s across all instruments</p>
+  }
+
+  <div class="actions">
+    <button type="submit" [disabled]="form.invalid" data-testid="apply"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Apply</button>
+    @if (justApplied()) {
+      <span class="applied" role="status" data-testid="applied">✓ Applied, run restarted</span>
+    }
+  </div>
+</form>

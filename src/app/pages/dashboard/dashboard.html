@@ -1,0 +1,57 @@
+<section class="toolbar">
+  <div class="status">
+    <app-status-pill [status]="producer.status()" />
+    <span class="muted" data-testid="counters">batches: {{ producer.batches() }} · updates: {{ volume(producer.updates()) }}</span>
+  </div>
+  <button type="button" (click)="producer.toggle()" [disabled]="!producer.canToggle()" data-testid="toggle">
+    @if (producer.status() === 'paused') {
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>Resume
+    } @else {
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4v16M16 4v16"/></svg>Pause
+    }
+  </button>
+</section>
+
+<p class="muted" data-testid="rate">
+  {{ producer.config().instruments }} instruments · {{ producer.config().updatesPerBatch }} updates every
+  {{ producer.config().batchIntervalMs }} ms ≈ {{ volume(rate()) }} updates/s (all instruments)
+  @if (producer.actualRate(); as actual) {
+    <span data-testid="actual-rate">· actual {{ volume(actual) }} updates/s</span>
+  }
+</p>
+
+@if (producer.error(); as error) {
+  <p class="error" role="alert">{{ error }}</p>
+}
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Symbol</th>
+        <th scope="col" class="num">Last price</th>
+        <th scope="col" class="num">Bid–ask spread</th>
+        <th scope="col" class="num">Volume</th>
+        <th scope="col" class="num">VWAP</th>
+        <th scope="col" class="num">Imbalance</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of producer.rows(); track row.symbol) {
+        <tr>
+          <th scope="row">{{ row.symbol }}</th>
+          <td class="num trend" data-col="last" [class.up]="row.trend === 1" [class.down]="row.trend === -1">
+            {{ price(row.lastPrice) }}
+          </td>
+          <td class="num" data-col="spread">{{ price(row.spread) }}</td>
+          <td class="num" data-col="volume">{{ volume(row.volume) }}</td>
+          <td class="num" data-col="vwap">{{ price(row.vwap) }}</td>
+          <td class="num" data-col="imbalance"
+              [class.pos]="(row.imbalance ?? 0) > 0" [class.neg]="(row.imbalance ?? 0) < 0">
+            {{ imbalance(row.imbalance) }}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

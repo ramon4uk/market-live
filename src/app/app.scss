@@ -1,0 +1,61 @@
+header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.brand {
+  font-family: 'Inter', 'Segoe UI', Arial, system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding-bottom: 0.6rem;
+}
+
+.brand .live {
+  color: var(--accent);
+}
+
+// Terminal-style tabs sitting on the header's bottom edge.
+nav {
+  display: flex;
+  gap: 0.25rem;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'Inter', 'Segoe UI', Arial, system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.5rem 1.1rem;
+    border-radius: var(--radius) var(--radius) 0 0;
+    background: var(--surface-2);
+    transition: color 0.15s, background-color 0.15s;
+
+    &:hover {
+      color: var(--text);
+      background: var(--field);
+    }
+
+    &.active {
+      color: #fff;
+      background: var(--accent);
+    }
+  }
+}
+
+main {
+  padding: 1.25rem;
+  max-width: 64rem;
+  margin: 0 auto;
+}

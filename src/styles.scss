@@ -1,0 +1,24 @@
+@use 'tokens';
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', Arial, system-ui, -apple-system, sans-serif;
+  font-size: 0.875rem;
+}
+
+h1 {
+  font-size: 1.25rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 0;
+}
+
+// Inline SVG icons inherit the surrounding text colour and size.
+.icon {
+  width: 1.1em;
+  height: 1.1em;
+  flex: none;
+}

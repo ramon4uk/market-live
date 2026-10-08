@@ -1,0 +1,27 @@
+:host {
+  --tone: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--tone);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: default;
+}
+
+:host([data-status='running']) { --tone: var(--pos); }
+:host([data-status='paused']) { --tone: var(--warn); }
+:host([data-status='loading']) { --tone: var(--accent); }
+:host([data-status='error']) { --tone: var(--neg); }
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

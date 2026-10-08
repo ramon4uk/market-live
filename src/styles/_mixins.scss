@@ -1,0 +1,42 @@
+@mixin button($variant: primary) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font: inherit;
+  font-weight: 500;
+  padding: 0.4rem 1.1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.1s, box-shadow 0.15s;
+
+  @if $variant == primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  } @else {
+    background: var(--surface-2);
+    color: inherit;
+  }
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.15);
+    box-shadow: 0 0 0 1px var(--accent), 0 2px 8px color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.96);
+    filter: brightness(0.9);
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
