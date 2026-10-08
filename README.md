@@ -96,4 +96,8 @@ Playwright (Chromium) drives the real app with the real Wasm in the worker, in [
 fills the table, Pause freezes the counters and Resume continues them, Apply restarts the run with the new
 configuration (and lifts a pause), invalid settings block Apply, a reload on `/settings` works.
 Assertions are web-first (auto-retrying) on UI state such as `data-status` and the counters; the only fixed waits are in the Pause test, to prove the counters stay frozen.
+Accessibility is checked with axe-core (`@axe-core/playwright`, WCAG 2.0–2.2 A/AA rules) on the dashboard (running and paused)
+and on settings (also with validation errors), plus keyboard checks: `aria-current` on the active nav link, the toggle
+usable with Space and keeping focus, every input having an accessible name. Note that axe covers only the issues that can be
+detected automatically, so it doesn't replace a manual screen-reader pass.
 Failed runs keep a trace in `test-results/` (`npx playwright show-trace <trace.zip>`).

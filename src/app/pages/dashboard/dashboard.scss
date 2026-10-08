@@ -25,7 +25,7 @@ button {
 }
 
 .error {
-  color: var(--neg);
+  color: var(--neg-text);
 }
 
 .table-wrap {
@@ -78,7 +78,7 @@ tbody tr:last-child > * {
 }
 
 .pos { color: var(--pos); }
-.neg { color: var(--neg); }
+.neg { color: var(--neg-text); }
 
 // Direction of the last price change. The arrow is decorative (CSS content), so the cell text stays the price.
 .trend::before {
@@ -89,5 +89,5 @@ tbody tr:last-child > * {
 }
 .trend.up { color: var(--pos); }
 .trend.up::before { content: '▲'; }
-.trend.down { color: var(--neg); }
+.trend.down { color: var(--neg-text); }
 .trend.down::before { content: '▼'; }

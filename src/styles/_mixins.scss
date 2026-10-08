@@ -13,7 +13,7 @@
   @if $variant == primary {
     background: var(--accent);
     border-color: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
   } @else {
     background: var(--surface-2);
     color: inherit;

@@ -14,7 +14,7 @@
 :host([data-status='running']) { --tone: var(--pos); }
 :host([data-status='paused']) { --tone: var(--warn); }
 :host([data-status='loading']) { --tone: var(--accent); }
-:host([data-status='error']) { --tone: var(--neg); }
+:host([data-status='error']) { --tone: var(--neg-text); }
 
 .spin {
   animation: spin 1s linear infinite;

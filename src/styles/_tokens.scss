@@ -3,6 +3,8 @@ $terminal: (
   bg: #0b1b2e, surface: #12263d, surface-2: #1b3552, field: #243f5f,
   text: #e8eef6, muted: #8ea3bb, border: #2f4d6e,
   accent: #1a9fc4, pos: #2fbf71, neg: #e5484d, warn: #e5a93b,
+  // Text variants meeting WCAG AA (4.5:1): red text on the dark panels and text on top of the accent colour.
+  neg-text: #ff7a7e, on-accent: #0b1b2e,
 );
 
 :root {
