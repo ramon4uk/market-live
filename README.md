@@ -2,6 +2,9 @@
 
 A real-time market dashboard and a settings page for the data producer.
 
+- **Live demo:** https://ramon4uk.github.io/market-live/
+- **Repository:** https://github.com/ramon4uk/market-live
+
 ## Running
 ```bash
 nvm use            # Node 26.10.0 (.nvmrc)
@@ -12,6 +15,13 @@ npm run build      # builds Wasm and the production bundle into dist/
 ```
 Wasm is built with `npm run build:wasm` (AssemblyScript → `public/market.wasm`);
 it is already part of `start`, `build` and `test`.
+
+## Deployment
+Every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml): `npm ci`, the unit tests,
+a production build with `--base-href /<repo>/` and a deploy to GitHub Pages. Pull requests run the tests and the
+build without deploying. `index.html` is copied to `404.html`, so deep links and reloads (e.g. `/settings`) are
+handled by the Angular router; the browser console shows a 404 for such a reload, which is how Pages serves the fallback.
+`public/market.wasm` is a build artifact (not committed): CI builds it from `assembly/index.ts`.
 
 ## Architecture
 ```
