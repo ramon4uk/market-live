@@ -41,6 +41,10 @@ nav {
     border-radius: var(--radius) var(--radius) 0 0;
     background: var(--surface-2);
     transition: color 0.15s, background-color 0.15s;
+    // Links are draggable by default: a few px of pointer drift between press and release starts a drag
+    // instead of a click, so tabs sometimes ignored the first click.
+    -webkit-user-drag: none;
+    user-select: none;
 
     &:hover {
       color: var(--text);
