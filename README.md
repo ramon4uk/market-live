@@ -26,9 +26,53 @@ handled by the Angular router; the browser console shows a 404 for such a reload
 `public/market.wasm` is a build artifact (not committed): CI builds it from `assembly/index.ts`.
 
 ## Architecture
+```mermaid
+flowchart LR
+  subgraph main["Main thread"]
+    direction TB
+    Settings["Settings page<br/>(draft form)"]
+    Dashboard["Dashboard page<br/>(metrics table)"]
+    Service["ProducerService<br/>runId · signals · RxJS"]
+    Settings -- "Apply / Pause / Resume" --> Service
+    Service -- "signals" --> Dashboard
+    Service -- "status" --> Settings
+  end
+
+  subgraph worker["Web Worker"]
+    direction TB
+    Handler["worker-handler<br/>ordered command queue"]
+    Core["ProducerCore<br/>setTimeout chain, pause"]
+    Wasm["market.wasm<br/>generateBatch(n)"]
+    Agg["MetricsAggregator<br/>volume, Σ(price×qty), book"]
+    Handler --> Core
+    Core -- "1 · generateBatch" --> Wasm
+    Wasm -- "2 · Int32Array view<br/>of linear memory" --> Agg
+    Agg -- "3 · Float64Array snapshot" --> Core
+  end
+
+  Service -- "start / pause / resume<br/>+ runId" --> Handler
+  Core -- "status / snapshot + runId<br/>(buffer transferred)" --> Service
 ```
-Wasm (assembly/index.ts)  →  Worker (ProducerCore + MetricsAggregator)  →  ProducerService (signals)  →  UI
-  generates updates           computes metrics, owns the timer             runId, status, errors        table/form
+
+Every Apply bumps the `runId`, so late messages from a previous run are dropped on both sides:
+
+```mermaid
+sequenceDiagram
+  participant UI as Settings
+  participant S as ProducerService
+  participant W as Worker
+  UI->>S: Apply (config)
+  S->>W: start { runId: 2, config, wasmUrl }
+  W-->>S: snapshot { runId: 1 } (late)
+  Note over S: runId ≠ 2, discarded
+  W-->>S: status { runId: 2, running }
+  loop every batchIntervalMs
+    W-->>S: snapshot { runId: 2, values, updates, activeMs }
+  end
+  UI->>S: Pause
+  S->>W: pause { runId: 2 }
+  Note over W: timer cancelled, totals kept
+  W-->>S: status { runId: 2, paused }
 ```
 - **Wasm generator** (`assembly/index.ts`) — PRNG (xorshift64*) and per-instrument state: the mid price and
   the bid/ask book quantities. Per update: the book quantities take a random-walk step; the trade side is
