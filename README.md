@@ -27,9 +27,9 @@ handled by the Angular router; the browser console shows a 404 for such a reload
 
 ## Architecture
 ```mermaid
-flowchart LR
+flowchart TB
   subgraph main["Main thread"]
-    direction TB
+    direction LR
     Settings["Settings page<br/>(draft form)"]
     Dashboard["Dashboard page<br/>(metrics table)"]
     Service["ProducerService<br/>runId · signals · RxJS"]
@@ -39,11 +39,11 @@ flowchart LR
   end
 
   subgraph worker["Web Worker"]
-    direction TB
+    direction LR
     Handler["worker-handler<br/>ordered command queue"]
     Core["ProducerCore<br/>setTimeout chain, pause"]
     Wasm["market.wasm<br/>generateBatch(n)"]
-    Agg["MetricsAggregator<br/>volume, Σ(price×qty), book"]
+    Agg["MetricsAggregator<br/>volume, VWAP, book"]
     Handler --> Core
     Core -- "1 · generateBatch" --> Wasm
     Wasm -- "2 · Int32Array view<br/>of linear memory" --> Agg
